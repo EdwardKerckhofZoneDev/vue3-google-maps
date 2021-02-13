@@ -35,6 +35,9 @@ import {
 import { useGeolocation } from './composables/useGeolocation'
 import { Loader } from '@googlemaps/js-api-loader'
 
+// You wil not be able to use this key since it is only registered to this domain.
+const MAPS_API_KEY = 'AIzaSyAbph0kVAo3u_5dzxzNQvDCyFvoEtjDk7Q'
+
 export default defineComponent({
   name: 'App',
 
@@ -54,7 +57,7 @@ export default defineComponent({
 
     // Google maps loader
     const loader = new Loader({
-      apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY!.toString()
+      apiKey: MAPS_API_KEY
     })
 
     // Map ref
