@@ -9,7 +9,7 @@
     </div>
     <div class="distance">
       <h1>Distance</h1>
-      <p>{{ distance.toFixed(2) * 1.609344 }} km</p>
+      <p>{{ (distance * 1.609344).toFixed(2) }} km</p>
     </div>
     <div class="clicked-pos">
       <h1>Clicked Position</h1>
@@ -54,7 +54,7 @@ export default defineComponent({
 
     // Google maps loader
     const loader = new Loader({
-      apiKey: 'AIzaSyBcO-Xg5pqUrFitJXyt0P5UEQjgja8c2WM'
+      apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY!.toString()
     })
 
     // Map ref
@@ -90,11 +90,18 @@ export default defineComponent({
     watch([map, currentPos, clickedPos], () => {
       // If a line is already drawn, remove it
       if (line) line.setMap(null)
+
+      // Recenter to users location when the values change
+      if (map.value) map.value.setCenter(currentPos.value)
+
       // Draw line from users position to clicked position
       if (map.value && clickedPos.value !== null)
         line = new google.maps.Polyline({
           path: [currentPos.value, clickedPos.value],
-          map: map.value
+          map: map.value,
+          strokeColor: '#2c3e50',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
         })
     })
 
