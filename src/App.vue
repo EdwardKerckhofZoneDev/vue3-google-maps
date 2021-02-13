@@ -7,6 +7,10 @@
         {{ currentPos.lng.toFixed(2) }}
       </p>
     </div>
+    <div class="distance">
+      <h1>Distance</h1>
+      <p>{{ distance.toFixed(2) * 1.609344 }} km</p>
+    </div>
     <div class="clicked-pos">
       <h1>Clicked Position</h1>
       <p v-if="clickedPos">
@@ -94,7 +98,43 @@ export default defineComponent({
         })
     })
 
-    return { currentPos, mapRef, clickedPos }
+    // Use haversine formula to calculate distance between 2 positions on a sphere
+    // https://en.wikipedia.org/wiki/Haversine_formula
+    const haversine = (
+      pos1: { lat: number; lng: number },
+      pos2: { lat: number; lng: number }
+    ) => {
+      const r = 3958.8 // Radius of the earth
+      const rlat1 = pos1.lat * (Math.PI / 180) // Degrees to radians
+      const rlat2 = pos2.lat * (Math.PI / 180) // Degrees to radians
+      const rlng1 = pos1.lng * (Math.PI / 180) // Degrees to radians
+      const rlng2 = pos2.lng * (Math.PI / 180) // Degrees to radians
+
+      const d =
+        2 *
+        r *
+        Math.asin(
+          Math.sqrt(
+            Math.sin((rlat2 - rlat1) / 2) * Math.sin((rlat2 - rlat1) / 2) +
+              Math.cos(rlat1) *
+                Math.cos(rlat2) *
+                Math.sin((rlng2 - rlng1) / 2) *
+                Math.sin((rlng2 - rlng1) / 2)
+          )
+        )
+
+      return d
+    }
+
+    // Pass haversine in a computed property to check changes
+    const distance = computed(
+      () =>
+        clickedPos.value === null
+          ? 0 // distance of 0 when user has not clicked yet
+          : haversine(currentPos.value, clickedPos.value) // otherwise calculate using haversine
+    )
+
+    return { currentPos, mapRef, clickedPos, distance }
   }
 })
 </script>
