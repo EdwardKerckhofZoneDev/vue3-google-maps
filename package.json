@@ -1,6 +1,6 @@
 {
   "name": "vue3-google-maps",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Google maps interactions with the new Vue 3 composition API",
   "author": {
     "email": "edward@zonedev.be",
